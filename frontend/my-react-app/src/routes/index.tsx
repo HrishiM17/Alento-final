@@ -10,6 +10,8 @@ import MyProfile from "../components/Profile/MyProfile";
 import Step1 from "../components/Onboarding/Step1";
 import Step2 from "../components/Onboarding/Step2";
 import Step3 from "../components/Onboarding/Step3";
+import TestModalPage from "../Pages/TestModalPage";
+
 
 
 const AppRoutes: React.FC = () => {
@@ -41,6 +43,11 @@ const AppRoutes: React.FC = () => {
       <Route path="/profile/step1" element={<Step1 />} /> {/* ✅ */}
       <Route path="/profile/step2" element={<Step2 />} /> {/* ✅ */}
       <Route path="/profile/step3" element={<Step3 />} /> {/* ✅ */}
+
+      {/* 🧪 Test Pages */}
+      <Route path="/test-modal/*" element={<TestModalPage />} />
+
+      
 
 
       {/* 🧭 Default Redirects */}

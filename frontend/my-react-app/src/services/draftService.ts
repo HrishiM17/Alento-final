@@ -1,43 +1,44 @@
-import api from "./api";
+const BASE_URL = "http://localhost:8000";
 
-// Define the shape of a draft
-export interface Draft {
-  id?: string;
-  title: string;
-  content: string;
-  createdAt?: string;
-  updatedAt?: string;
-  [key: string]: any; // allow flexibility for extra fields
+export async function getDrafts() {
+  const res = await fetch(`${BASE_URL}/drafts`);
+  return res.json();
 }
 
-// Define API response type
-export interface DraftResponse {
-  success: boolean;
-  data?: Draft | Draft[];
-  message?: string;
+export async function getDraft(id: number) {
+  const res = await fetch(`${BASE_URL}/drafts/${id}`);
+  return res.json();
 }
 
-export const draftService = {
-  // Fetch all drafts
-  getDrafts: async (): Promise<Draft[]> => {
-    const response = await api.get<DraftResponse>("/drafts");
-    return (response.data.data as Draft[]) || [];
-  },
+export async function createDraft(title: string, content: string, files: File[]) {
+  const fd = new FormData();
+  fd.append("title", title);
+  fd.append("content", content);
+  files.forEach(f => fd.append("files", f));
 
-  // Save a new draft
-  saveDraft: async (draftData: Omit<Draft, "id" | "createdAt" | "updatedAt">): Promise<Draft> => {
-    const response = await api.post<DraftResponse>("/drafts", draftData);
-    return response.data.data as Draft;
-  },
+  const res = await fetch(`${BASE_URL}/drafts`, {
+    method: "POST",
+    body: fd,
+  });
+  return res.json();
+}
 
-  // Update an existing draft
-  updateDraft: async (id: string, draftData: Partial<Draft>): Promise<Draft> => {
-    const response = await api.put<DraftResponse>(`/drafts/${id}`, draftData);
-    return response.data.data as Draft;
-  },
+export async function updateDraft(id: number, title: string, content: string, files: File[]) {
+  const fd = new FormData();
+  fd.append("title", title);
+  fd.append("content", content);
+  files.forEach(f => fd.append("files", f));
 
-  // Delete a draft
-  deleteDraft: async (id: string): Promise<void> => {
-    await api.delete(`/drafts/${id}`);
-  },
-};
+  const res = await fetch(`${BASE_URL}/drafts/${id}`, {
+    method: "PUT",
+    body: fd,
+  });
+  return res.json();
+}
+
+export async function deleteDraft(id: number) {
+  const res = await fetch(`${BASE_URL}/drafts/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
